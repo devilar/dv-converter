@@ -57,7 +57,7 @@ function submitHandler(event){
 
             Object.entries(valutes).map(([key,value])=> {
                 console.log(key)
-                console.log(value)
+                console.log(valueg)
 
 
 
