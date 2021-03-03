@@ -12,31 +12,28 @@ import {
 function App() {
 
     const dispatch = useDispatch()
+
+
+
+
+const [result,setResult] = useState('0')
+
+
+   useEffect(()=>{
+    /*
+       fetch(`https://api.ratesapi.io/api/latest?base=USD`)
+           .then(response=>response.json())
+           .then(json=>dispatch({type:'FETCHVALUTES',payload:json.rates}))
+*/
+
+},[])
     const valutes = useSelector(state=>state)
 
 
 
-const [result,setResult] = useState(0)
-const [dvCurrency,setDvCurrency] = useState('USD')
-
-
-useEffect(()=>{
-/*
-    fetch('https://www.cbr-xml-daily.ru/daily_json.js')
-        .then(response=>response.json())
-        .then(json=>dispatch({type:'FETCHVALUTES',payload:json.Valute}))
-    */
-
-    fetch(`https://api.ratesapi.io/api/latest?base=USD`)
-        .then(response=>response.json())
-        .then(json=>dispatch({type:'FETCHVALUTES',payload:json.rates}))
-
-
-},[])
-
 function submitHandler(event){
 
-        event.preventDefault()
+ event.preventDefault()
 
 
 
@@ -47,26 +44,28 @@ function submitHandler(event){
         if(parseInt(elem) >= 0 || parseInt(elem) <= 0){
 
             valute = splits[index+1]
+            fetch(`https://api.ratesapi.io/api/latest?base=${valute.toUpperCase()}`)
+                .then(response=>response.json())
+                .then(json=>{
+                    dispatch({type:'FETCHVALUTES',payload:json.rates})
+
+                })
+
+
             valuteValue = elem
         }
         if(elem == 'in'){
 
             parseValute = splits[index+1]
-            console.log('valute',valute, 'with value:',valuteValue, 'and parsevalute is', parseValute)
 
 
-            Object.entries(valutes).map(([key,value])=> {
-                console.log(key)
-                console.log(valueg)
+            Object.entries(valutes).map(([key, value])=> {
 
 
+                if(key == parseValute.toUpperCase()){
 
-                /*
-                if(elem.CharCode == valute.toUpperCase()){
-
-                    console.log('bingo!! value is ',elem.Value * valuteValue)
-                    setResult((elem.Value * valuteValue).toFixed(2))
-                }*/
+                    setResult((value * valuteValue).toFixed(2))
+                }
 
 
 
@@ -77,7 +76,6 @@ function submitHandler(event){
     })
 
 }
-
     function CalcForm(el){
 
 
