@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.App{
+  width:1200px;
+  margin:0 auto;
+}
+
+.valuteTable{
+  width:100%;
+}
+.valuteTable tr:first-child td{font-weight:700;}
