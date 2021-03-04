@@ -12,29 +12,30 @@ import {
 function App() {
 
     const dispatch = useDispatch()
-
+    const [zzz,setZzz] = useState('')
 
 
 
 const [result,setResult] = useState('0')
-
-
-   useEffect(()=>{
-    /*
-       fetch(`https://api.ratesapi.io/api/latest?base=USD`)
-           .then(response=>response.json())
-           .then(json=>dispatch({type:'FETCHVALUTES',payload:json.rates}))
+           useEffect(()=>{
+                /*
+               fetch(`https://api.ratesapi.io/api/latest?base=RUB`)
+                   .then(response=>response.json())
+                   .then(json=>{
+                       console.log(json)
+                       dispatch({type:'FETCHVALUTES',payload:json.rates})
+               })
 */
-
 },[])
-    const valutes = useSelector(state=>state)
+
+
+    let valutes = useSelector(state=>state)
 
 
 
 function submitHandler(event){
-
+console.log(valutes)
  event.preventDefault()
-
 
 
     var splits = event.target.valute.value.split(' ');
@@ -44,10 +45,14 @@ function submitHandler(event){
         if(parseInt(elem) >= 0 || parseInt(elem) <= 0){
 
             valute = splits[index+1]
+            setZzz(valute.toUpperCase())
+
             fetch(`https://api.ratesapi.io/api/latest?base=${valute.toUpperCase()}`)
                 .then(response=>response.json())
                 .then(json=>{
                     dispatch({type:'FETCHVALUTES',payload:json.rates})
+
+
 
                 })
 
@@ -83,7 +88,7 @@ function submitHandler(event){
         return(
             <div>
                 <form onSubmit={submitHandler}>
-                    <input name='valute' onChange={event=>setValue(event.target.value)} type="text" value={value}/>
+                    <input data-tag='kuskus' name='valute' onChange={event=>setValue(event.target.value)} type="text" value={value}/>
                     <button type='submit'>Submit</button>
                 </form>
 
