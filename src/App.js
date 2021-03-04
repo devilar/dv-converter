@@ -12,21 +12,12 @@ import {
 function App() {
 
     const dispatch = useDispatch()
-    const [zzz,setZzz] = useState('')
+
 
 
 
 const [result,setResult] = useState('0')
-           useEffect(()=>{
-                /*
-               fetch(`https://api.ratesapi.io/api/latest?base=RUB`)
-                   .then(response=>response.json())
-                   .then(json=>{
-                       console.log(json)
-                       dispatch({type:'FETCHVALUTES',payload:json.rates})
-               })
-*/
-},[])
+
 
 
     let valutes = useSelector(state=>state)
@@ -34,51 +25,40 @@ const [result,setResult] = useState('0')
 
 
 function submitHandler(event){
-console.log(valutes)
+
  event.preventDefault()
 
 
     var splits = event.target.valute.value.split(' ');
     let valute,valuteValue,parseValute
-
     splits.map((elem,index)=>{
         if(parseInt(elem) >= 0 || parseInt(elem) <= 0){
-
             valute = splits[index+1]
-            setZzz(valute.toUpperCase())
-
             fetch(`https://api.ratesapi.io/api/latest?base=${valute.toUpperCase()}`)
                 .then(response=>response.json())
                 .then(json=>{
                     dispatch({type:'FETCHVALUTES',payload:json.rates})
-
-
-
                 })
-
-
             valuteValue = elem
         }
         if(elem == 'in'){
-
             parseValute = splits[index+1]
-
-
             Object.entries(valutes).map(([key, value])=> {
-
-
                 if(key == parseValute.toUpperCase()){
-
                     setResult((value * valuteValue).toFixed(2))
                 }
-
-
-
             })
-
-
         }
     })
+    console.log('Валюта из',valute);
+    console.log('Количество из',valuteValue);
+    console.log('Парсируемая валюта -',parseValute);
+
+
+
+
+
+
 
 }
     function CalcForm(el){
@@ -143,13 +123,6 @@ console.log(valutes)
 
 
         </Switch>
-
-
-
-
-
-
-
 
 
     </Router>
