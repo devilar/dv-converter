@@ -17,14 +17,27 @@ function App() {
 
 
 const [result,setResult] = useState('0')
+const [thisValute,setThisValute] = useState('USD');
 
+    useEffect(()=>{
+        fetch(`https://api.ratesapi.io/api/latest?base=USD`)
+            .then(response=>response.json())
+            .then(json=>{
+                dispatch({type:'FETCHVALUTES',payload:json.rates})
 
+            })
+    },[])
 
     let valutes = useSelector(state=>state)
 
 
 
+
+
+
 function submitHandler(event){
+
+
 
  event.preventDefault()
 
@@ -34,51 +47,62 @@ function submitHandler(event){
     splits.map((elem,index)=>{
         if(parseInt(elem) >= 0 || parseInt(elem) <= 0){
             valute = splits[index+1]
-            fetch(`https://api.ratesapi.io/api/latest?base=${valute.toUpperCase()}`)
-                .then(response=>response.json())
-                .then(json=>{
-                    dispatch({type:'FETCHVALUTES',payload:json.rates})
-                })
             valuteValue = elem
         }
-        if(elem == 'in'){
+        if(elem === 'in'){
             parseValute = splits[index+1]
+
             Object.entries(valutes).map(([key, value])=> {
-                if(key == parseValute.toUpperCase()){
+                if(key === parseValute.toUpperCase()){
                     setResult((value * valuteValue).toFixed(2))
                 }
             })
+
         }
     })
-    console.log('Валюта из',valute);
-    console.log('Количество из',valuteValue);
-    console.log('Парсируемая валюта -',parseValute);
 
+    fetch(`https://api.ratesapi.io/api/latest?base=${valute.toUpperCase()}`)
+        .then(response=>response.json())
+        .then(json=>{
+            dispatch({type:'FETCHVALUTES',payload:json.rates})
+            return json.rates
+        })
+        .then((data)=>{
 
+            Object.entries(data).map(([key, value])=> {
+                if(key === parseValute.toUpperCase()){
+                    setResult((value * valuteValue).toFixed(2))
+                }
+            })
 
-
-
-
+        })
 
 }
-    function CalcForm(el){
-
-
-        const [value,setValue] = useState('')
+    function CalcForm(){
+    const [value,setValue] = useState('')
         return(
             <div>
+                <div className='dv-info'>Пример ввода данных: <span>15 usd in rub</span></div>
                 <form onSubmit={submitHandler}>
                     <input data-tag='kuskus' name='valute' onChange={event=>setValue(event.target.value)} type="text" value={value}/>
                     <button type='submit'>Submit</button>
                 </form>
 
-                {result}
-
-
+                <div className='dvResult'>Результат: {result} {thisValute}</div>
             </div>
         )
     }
+    function mainListValue(elem){
 
+        fetch(`https://api.ratesapi.io/api/latest?base=${elem}`)
+            .then(response=>response.json())
+            .then(json=>{
+                dispatch({type:'FETCHVALUTES',payload:json.rates})
+
+
+            })
+        setThisValute(elem)
+    }
 
   return (
 
@@ -89,9 +113,9 @@ function submitHandler(event){
 
 
         <nav>
-            <ul>
+            <ul className='dv-links'>
                 <li>
-                    <Link to="/">Home</Link>
+                    <Link to="/">Converter</Link>
                 </li>
                 <li>
                     <Link to="/values">Values</Link>
@@ -103,9 +127,30 @@ function submitHandler(event){
 
         <Switch>
             <Route path="/values">
+                <h2>Выбери валюту</h2>
+
+
+                <div className='dv-valute-changer-container'>
+                {Object.keys(valutes).map((elem,index)=>{
+
+                    if(elem != 'EUR'){
+
+                        return(
+                            <div key={index} onClick={()=>mainListValue(elem)} className={thisValute===elem? 'active' : ''}><span>{elem}</span></div>
+                        )
+                    }
+
+
+                })}
+                </div>
+
+
+                <div className='crs-valute'>Текущая валюта: {thisValute}</div>
                 <table className='valuteTable'>
-                    {/*<tr><td>ID</td><td>Название Валюты</td><td>Чаркод</td><td>Предыдущая стоимость</td><td>Текущая стоимость</td></tr>*/}
-                    {/*Object.values(valutes).map(elem=><tr><td>{elem.ID}</td><td>{elem.Name}</td><td>{elem.CharCode}</td><td>{elem.Previous}</td><td>{elem.Value}</td></tr>)*/}
+    <tbody>
+
+    <tr><td>Валюта</td><td>Курс</td></tr>
+
                     {Object.entries(valutes).map(([key, value]) => {
                         return(
                             <tr>
@@ -114,7 +159,7 @@ function submitHandler(event){
                             </tr>
                         )
                     })}
-
+    </tbody>
                 </table>
             </Route>
             <Route path="/">
