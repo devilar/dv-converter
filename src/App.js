@@ -44,7 +44,7 @@ function submitHandler(event){
 
     var splits = event.target.valute.value.split(' ');
     let valute,valuteValue,parseValute
-    splits.map((elem,index)=>{
+    splits.forEach((elem,index)=>{
         if(parseInt(elem) >= 0 || parseInt(elem) <= 0){
             valute = splits[index+1]
             valuteValue = elem
@@ -52,7 +52,7 @@ function submitHandler(event){
         if(elem === 'in'){
             parseValute = splits[index+1]
 
-            Object.entries(valutes).map(([key, value])=> {
+            Object.entries(valutes).forEach(([key, value])=> {
                 if(key === parseValute.toUpperCase()){
                     setResult((value * valuteValue).toFixed(2))
                 }
@@ -69,7 +69,7 @@ function submitHandler(event){
         })
         .then((data)=>{
 
-            Object.entries(data).map(([key, value])=> {
+            Object.entries(data).forEach(([key, value])=> {
                 if(key === parseValute.toUpperCase()){
                     setResult((value * valuteValue).toFixed(2))
                 }
@@ -133,7 +133,7 @@ function submitHandler(event){
                 <div className='dv-valute-changer-container'>
                 {Object.keys(valutes).map((elem,index)=>{
 
-                    if(elem != 'EUR'){
+                    if(elem !== 'EUR'){
 
                         return(
                             <div key={index} onClick={()=>mainListValue(elem)} className={thisValute===elem? 'active' : ''}><span>{elem}</span></div>
@@ -171,6 +171,7 @@ function submitHandler(event){
 
 
     </Router>
+
 </div>
   );
 
